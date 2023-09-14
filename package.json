@@ -1,0 +1,7 @@
+{
+  "name": "fast-find",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": "src/cli.js",
+  "scripts": {}
+}
