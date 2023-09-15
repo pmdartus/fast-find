@@ -23,3 +23,4 @@ Summary
 ## Notes
 * Almost no difference between async and sync `fs.readdir` (recursive: `true`)
 * Switching from `console.log` to `process.stdout` shows a 15% runtime improvement.
+* Using stream to pipe it to the stdout: https://github.com/nodejs/node/issues/10619#issuecomment-305964841

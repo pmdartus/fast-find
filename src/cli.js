@@ -16,12 +16,16 @@ const { positionals, values } = parseArgs({
     method: {
       type: "string",
       default: "readdirSync",
-    }
+    },
+    concurrency: {
+      type: "string",
+      default: '4',
+    },
   },
 });
 
 let [pattern, root] = positionals;
-const { first, method, ...rest } = values;
+const { first, method, concurrency, ...rest } = values;
 
 if (!pattern) {
   throw new Error("No pattern specified");
@@ -34,7 +38,8 @@ if (!walk) {
 
 findFiles(walk, {
   pattern,
-  root: root ?? '.',
   first,
+  root: root ?? '.',
+  concurrency: parseInt(concurrency, 10),
   rest
 });
