@@ -1,44 +1,58 @@
+import { LinkedList } from "./linked-list.js";
+
 export class AsyncQueue {
-    #fn = null;
-    #concurrency = 1;
+  fn = null;
+  queue = new LinkedList();
 
-    #queue = [];
-    #running = 0;
+  concurrency = 1;
+  running = 0;
+  isScheduled = false;
 
-    constructor(fn, concurrency = 1) {
-        this.#fn = fn;
-        this.#concurrency = concurrency;
-    }
-    
-    enqueue(...item) {
-        this.#queue.push(...item);
-        if (this.#running < this.#concurrency) {
-            this.#runNext();
-        }
-    }
-    
-    get size() {
-        return this.#queue.length;
-    }
+  constructor(fn, concurrency = 1) {
+    this.fn = fn;
+    this.concurrency = concurrency;
+  }
 
-    get isEmpty() {
-        return this.#queue.length === 0;
+  enqueue(item) {
+    this.queue.add(item);
+    this.scheduleNext();
+  }
+
+  scheduleNext() {
+    if (this.isScheduled) {
+      return;
     }
 
-    get isIdle() {
-        return this.#queue.length === 0 && this.#running === 0;
-    }
+    this.isScheduled = true;
 
-    #runNext() {
-        const item = this.#queue.shift();
-        this.#running += 1;
+    process.nextTick(() => {
+      this.isScheduled = false;
+      this.next();
+    });
+  }
 
-        const promise = this.#fn(item);
-        promise.then(() => {
-            this.#running -= 1;
-            if (this.#queue.length > 0) {
-                this.#runNext();
-            }
-        });
+  get size() {
+    return this.queue.size;
+  }
+
+  get isEmpty() {
+    return this.size === 0;
+  }
+
+  get isIdle() {
+    return this.size === 0 && this.running === 0;
+  }
+
+  next() {
+    while (this.running < this.concurrency && !this.queue.isEmpty) {
+      const item = this.queue.remove();
+
+      this.fn(item).then(() => {
+        this.running -= 1;
+        this.scheduleNext();
+      });
+
+      this.running += 1;
     }
+  }
 }

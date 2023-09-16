@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 import { parseArgs } from "node:util";
 
 import { findFiles, methods } from "./core.js";
@@ -15,7 +14,7 @@ const { positionals, values } = parseArgs({
     },
     method: {
       type: "string",
-      default: "readdirSync",
+      default: "walkAsyncQueue",
     },
     concurrency: {
       type: "string",

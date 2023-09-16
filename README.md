@@ -20,6 +20,18 @@ Summary
     4.58 ± 0.31 times faster than fast-find .
 ```
 
+```
+hyperfine --warmup=1 'fast-find --method=readdirSync .' 'fast-find --method=readdirAsync .' 'fast-find --method=walkAsyncSerial .' 'fast-find --method=walkAsyncQueue .'
+hyperfine --warmup=1 --runs=20 \
+  'fast-find --method=walkAsyncQueue --concurrency=1 .'  \
+  'fast-find --method=walkAsyncQueue --concurrency=2 .'  \
+  'fast-find --method=walkAsyncQueue --concurrency=4 .'  \
+  'fast-find --method=walkAsyncQueue --concurrency=10 .'  \
+  'fast-find --method=walkAsyncQueue --concurrency=20 .'  \
+  'fast-find --method=walkAsyncQueue --concurrency=100 .'  \
+  'fast-find --method=walkAsyncQueue --concurrency=200 .' 
+```
+
 ## Notes
 * Almost no difference between async and sync `fs.readdir` (recursive: `true`)
 * Switching from `console.log` to `process.stdout` shows a 15% runtime improvement.
