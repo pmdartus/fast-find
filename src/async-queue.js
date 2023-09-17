@@ -4,31 +4,17 @@ export class AsyncQueue {
   fn = null;
   queue = new LinkedList();
 
-  concurrency = 1;
+  concurrency;
   running = 0;
-  isScheduled = false;
 
-  constructor(fn, concurrency = 1) {
+  constructor(fn, concurrency) {
     this.fn = fn;
     this.concurrency = concurrency;
   }
 
   enqueue(item) {
     this.queue.add(item);
-    this.scheduleNext();
-  }
-
-  scheduleNext() {
-    if (this.isScheduled) {
-      return;
-    }
-
-    this.isScheduled = true;
-
-    process.nextTick(() => {
-      this.isScheduled = false;
-      this.next();
-    });
+    this.process();
   }
 
   get size() {
@@ -43,13 +29,13 @@ export class AsyncQueue {
     return this.size === 0 && this.running === 0;
   }
 
-  next() {
+  process() {
     while (this.running < this.concurrency && !this.queue.isEmpty) {
       const item = this.queue.remove();
 
       this.fn(item).then(() => {
         this.running -= 1;
-        this.scheduleNext();
+        this.process();
       });
 
       this.running += 1;

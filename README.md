@@ -161,3 +161,36 @@ for (let i = 0; i < 50000; i++) {
 * Switching from `console.log` to `process.stdout` shows a 15% runtime improvement.
 * Using stream to pipe it to the stdout: https://github.com/nodejs/node/issues/10619#issuecomment-305964841
 * Using a `LinkedList` instead of an `Array` does improve performance. By how much?
+
+## Methods
+
+**Using `readDirSync` with `recursive` set to `true`:**
+
+```js
+const dirents = fs.readdirSync(root, {
+  withFileTypes: true,
+  recursive: true,
+});
+```
+
+**Walk directory using `readDirSync`:**
+
+```js
+async function walkAsyncSerial(root, config, cb) {
+  const queue = [root];
+
+  while (queue.length !== 0) {
+    const root = queue.shift();
+
+    const dirents = await fs.promises.readdir(root, { withFileTypes: true });
+
+    for (let dirent of dirents) {
+      if (dirent.isDirectory()) {
+        queue.push(`${root}/${dirent.name}`);
+      }
+    }
+
+    cb(dirents);
+  }
+}
+```
