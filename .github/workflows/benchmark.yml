@@ -19,6 +19,8 @@ jobs:
           wget https://github.com/sharkdp/fd/releases/download/v8.7.0/fd_8.7.0_amd64.deb
           sudo dpkg -i fd_8.7.0_amd64.deb
 
+      - run: fd . / | wc -l
+
       - name: Run benchmark
         run: |
           hyperfine --export-markdown=result.md \
