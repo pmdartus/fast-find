@@ -31,10 +31,6 @@ jobs:
           cat result.md >> $GITHUB_STEP_SUMMARY
           echo "------------------" >> $GITHUB_STEP_SUMMARY
           echo "### CPU info" >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
           lscpu >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
           echo "### Memory info" >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
           free -m >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
