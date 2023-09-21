@@ -28,27 +28,30 @@ jobs:
           path: ${{ env.SAMPLE_DIRNAME }}
           fetch-depth: 0
 
-      - name: Run benchmark
-        run: |
-          hyperfine --export-markdown=result.md \
-            'fd . $SAMPLE_DIRNAME -HI' \
-            'node benchmarks/readdir-async-queue.cjs . $SAMPLE_DIRNAME' \
-            'node benchmarks/readdir-reccursive.cjs . $SAMPLE_DIRNAME' \
-            'node benchmarks/readdir-stats.cjs . $SAMPLE_DIRNAME' \
-            'node benchmarks/readdir-types-parallel-callback.cjs . $SAMPLE_DIRNAME' \
-            'node benchmarks/readdir-types-parallel-promise.cjs . $SAMPLE_DIRNAME' \
-            'node benchmarks/readdir-types.cjs . $SAMPLE_DIRNAME'
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
 
-      - name: Add job summary
-        run: |
-          echo '## Results :rocket:' >> $GITHUB_STEP_SUMMARY
-          cat result.md >> $GITHUB_STEP_SUMMARY
-          echo '------------------' >> $GITHUB_STEP_SUMMARY
-          echo '### CPU info' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          lscpu >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          echo '### Memory info' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          free -m >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+      # - name: Run benchmark
+      #   run: |
+      #     hyperfine --export-markdown=result.md \
+      #       'fd . $SAMPLE_DIRNAME -HI' \
+      #       'node benchmarks/readdir-async-queue.cjs . $SAMPLE_DIRNAME' \
+      #       'node benchmarks/readdir-reccursive.cjs . $SAMPLE_DIRNAME' \
+      #       'node benchmarks/readdir-stats.cjs . $SAMPLE_DIRNAME' \
+      #       'node benchmarks/readdir-types-parallel-callback.cjs . $SAMPLE_DIRNAME' \
+      #       'node benchmarks/readdir-types-parallel-promise.cjs . $SAMPLE_DIRNAME' \
+      #       'node benchmarks/readdir-types.cjs . $SAMPLE_DIRNAME'
+
+      # - name: Add job summary
+      #   run: |
+      #     echo '## Results :rocket:' >> $GITHUB_STEP_SUMMARY
+      #     cat result.md >> $GITHUB_STEP_SUMMARY
+      #     echo '------------------' >> $GITHUB_STEP_SUMMARY
+      #     echo '### CPU info' >> $GITHUB_STEP_SUMMARY
+      #     echo '```' >> $GITHUB_STEP_SUMMARY
+      #     lscpu >> $GITHUB_STEP_SUMMARY
+      #     echo '```' >> $GITHUB_STEP_SUMMARY
+      #     echo '### Memory info' >> $GITHUB_STEP_SUMMARY
+      #     echo '```' >> $GITHUB_STEP_SUMMARY
+      #     free -m >> $GITHUB_STEP_SUMMARY
+      #     echo '```' >> $GITHUB_STEP_SUMMARY
