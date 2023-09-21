@@ -26,6 +26,7 @@ jobs:
         with:
           repository: web-platform-tests/wpt
           path: ${{ env.SAMPLE_DIRNAME }}
+          fetch-depth: 0
 
       - name: Run benchmark
         run: |
