@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: web-platform-tests/wpt
-          path: ${{ env.$SAMPLE_DIRNAME }}
+          path: ${{ env.SAMPLE_DIRNAME }}
 
       - name: Run benchmark
         run: |
