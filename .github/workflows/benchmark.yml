@@ -19,11 +19,13 @@ jobs:
           wget https://github.com/sharkdp/fd/releases/download/v8.7.0/fd_8.7.0_amd64.deb
           sudo dpkg -i fd_8.7.0_amd64.deb
 
-      - name: Clone benchmarks repository
-        working-directory: {{$env.RUNNER_TEMP}}
-        run: git clone git@github.com:web-platform-tests/wpt.git
+      - name: Checkout benchmark sample repository
+        uses: actions/checkout@v4
+        with:
+          repository: web-platform-tests/wpt
+          path: benchmark/sample
 
-      - run: fd . $RUNNER_TEMP/wpt | wc -l
+      - run: fd . benchmark/sample | wc -l
 
       # - name: Run benchmark
       #   run: |
