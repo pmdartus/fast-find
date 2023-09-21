@@ -3,6 +3,8 @@ on: [push]
 jobs:
   Benchmark:
     runs-on: ubuntu-latest
+    env:
+      SAMPLE_DIRNAME: benchmark/sample
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -23,30 +25,29 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: web-platform-tests/wpt
-          path: benchmark/sample
+          path: ${{ env.$SAMPLE_DIRNAME }}
 
-      - run: fd . benchmark/sample | wc -l
+      - name: Run benchmark
+        run: |
+          hyperfine --export-markdown=result.md \
+            'fd . $SAMPLE_DIRNAME -HI' \
+            'node benchmarks/readdir-async-queue.cjs . $SAMPLE_DIRNAME' \
+            'node benchmarks/readdir-reccursive.cjs . $SAMPLE_DIRNAME' \
+            'node benchmarks/readdir-stats.cjs . $SAMPLE_DIRNAME' \
+            'node benchmarks/readdir-types-parallel-callback.cjs . $SAMPLE_DIRNAME' \
+            'node benchmarks/readdir-types-parallel-promise.cjs . $SAMPLE_DIRNAME' \
+            'node benchmarks/readdir-types.cjs . $SAMPLE_DIRNAME'
 
-      # - name: Run benchmark
-      #   run: |
-      #     hyperfine --export-markdown=result.md \
-      #       'node benchmarks/readdir-async-queue.cjs .' \
-      #       'node benchmarks/readdir-reccursive.cjs .' \
-      #       'node benchmarks/readdir-stats.cjs .' \
-      #       'node benchmarks/readdir-types-parallel-callback.cjs .' \
-      #       'node benchmarks/readdir-types-parallel-promise.cjs .' \
-      #       'node benchmarks/readdir-types.cjs .'
-
-      # - name: Add job summary
-      #   run: |
-      #     echo '## Results :rocket:' >> $GITHUB_STEP_SUMMARY
-      #     cat result.md >> $GITHUB_STEP_SUMMARY
-      #     echo '------------------' >> $GITHUB_STEP_SUMMARY
-      #     echo '### CPU info' >> $GITHUB_STEP_SUMMARY
-      #     echo '```' >> $GITHUB_STEP_SUMMARY
-      #     lscpu >> $GITHUB_STEP_SUMMARY
-      #     echo '```' >> $GITHUB_STEP_SUMMARY
-      #     echo '### Memory info' >> $GITHUB_STEP_SUMMARY
-      #     echo '```' >> $GITHUB_STEP_SUMMARY
-      #     free -m >> $GITHUB_STEP_SUMMARY
-      #     echo '```' >> $GITHUB_STEP_SUMMARY
+      - name: Add job summary
+        run: |
+          echo '## Results :rocket:' >> $GITHUB_STEP_SUMMARY
+          cat result.md >> $GITHUB_STEP_SUMMARY
+          echo '------------------' >> $GITHUB_STEP_SUMMARY
+          echo '### CPU info' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          lscpu >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo '### Memory info' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          free -m >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
